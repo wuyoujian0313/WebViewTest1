@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--主色-->
+    <color name="colorPrimary">#282333</color>
+    <!--状态栏颜色-->
+    <color name="colorPrimaryDark">#282333</color>
+    <!--配色,所有控件都会使用这个颜色-->
+    <color name="colorAccent">#282333</color>
 </resources>
+
+

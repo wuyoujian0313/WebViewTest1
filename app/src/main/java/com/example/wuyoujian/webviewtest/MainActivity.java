@@ -1,13 +1,23 @@
 package com.example.wuyoujian.webviewtest;
 
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -17,20 +27,105 @@ import java.util.StringTokenizer;
 
 public class MainActivity extends AIBaseActivity {
 
+    WebView mWebView;
+    ImageView mImageView;
+
+    private CountDownTimer timer = new CountDownTimer(4000, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            //mWebView.loadUrl("http://10.173.148.198:8080/ngboss/");
+
+            mWebView.loadUrl("http://doc.wadecn.com/dmp/login.html");
+        }
+
+        @Override
+        public void onFinish() {
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    mImageView.setVisibility(View.GONE);
+                    mWebView.setVisibility(View.VISIBLE);
+                    //startAlphaAnimationJavaCode();
+                }
+            });
+        }
+    };
+
+
+    private void startAlphaAnimationJavaCode() {
+//        //渐变动画    从显示（1.0）到隐藏（0.0）
+//        AlphaAnimation alphaAnim = new AlphaAnimation(1.0f, 0.0f);
+//        //执行三秒
+//        alphaAnim.setDuration(1000);
+//        alphaAnim.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
+//        mImageView.startAnimation(alphaAnim);
+
+        AlphaAnimation alphaAnim1 = new AlphaAnimation(0.0f, 1.0f);
+        //执行三秒
+        alphaAnim1.setDuration(1000);
+        alphaAnim1.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                //mImageView.setVisibility(View.GONE);
+               // mWebView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mWebView.startAnimation(alphaAnim1);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         WebView webView = (WebView)findViewById(R.id.web_view);
+        mWebView = webView;
+
+//        TypedValue typedValue = new TypedValue();
+//        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+//        final  int color = typedValue.data;
+        //webView.setBackgroundColor(color);
+        webView.setBackgroundColor(Color.parseColor("#00282333"));
+        webView.setBackground(getDrawable(R.color.colorPrimary));
+        webView.getBackground().setAlpha(0);
+
+        webView.getSettings().setDefaultTextEncodingName("utf-8") ;
+        webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setCacheMode(webView.getSettings().LOAD_NO_CACHE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             webView.setWebContentsDebuggingEnabled(true);
         }
 
         webView.getSettings().setAppCacheEnabled(false);
-
-
         WebSettings ws = webView.getSettings();
         try {
             if (Build.VERSION.SDK_INT >= 16) {
@@ -54,7 +149,7 @@ public class MainActivity extends AIBaseActivity {
         ws.setSupportZoom(false);
         ws.setTextSize(WebSettings.TextSize.NORMAL);//
         ws.setAllowFileAccess(true);
-        webView.setWebViewClient(new WebViewClient());
+
 
 //        String token = "isLoginNoSms=1&loginToSuccessPage=1&mobile=" + "13577116615";String token = "isLoginNoSms=1&loginToSuccessPage=1&mobile=" + "13577116615";String token = "isLoginNoSms=1&loginToSuccessPage=1&mobile=" + "13577116615";
         String token = "isLoginNoSms=1&loginToSuccessPage=1&mobile=" + "15925100424";
@@ -66,9 +161,28 @@ public class MainActivity extends AIBaseActivity {
         } catch (Exception e) {
         }
 
+        //webView.loadDataWithBaseURL(null, "加载中...", "text/html", "utf-8",null);
+        //webView.loadUrl("http://plan.wadecn.com/#/");
+        mImageView = (ImageView)findViewById(R.id.iv_splash);
+        mWebView.loadDataWithBaseURL(null, "加载中...", "text/html", "utf-8",null);
+        //webView.setVisibility(View.INVISIBLE);
+        timer.start();
+        //mWebView.loadUrl("file:///android_asset/welcome.html");
 
 
-        webView.loadUrl("http://10.174.61.149/html/iframe.html");
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                //view.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+
+        //webView.loadUrl("http://www.baidu.com");
+        //webView.loadUrl("http://www.jd.com");
+        //webView.setVisibility(View.VISIBLE);
         //http://www.wadecn.com/doc/Demo/test.html
         //http://10.174.61.149/html/demo.html
         //webView.loadUrl("http://www.wadecn.com/doc/Demo/test.html");
