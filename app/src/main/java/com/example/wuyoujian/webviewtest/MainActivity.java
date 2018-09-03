@@ -18,6 +18,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,21 +31,34 @@ public class MainActivity extends AIBaseActivity {
     WebView mWebView;
     ImageView mImageView;
 
-    private CountDownTimer timer = new CountDownTimer(4000, 1000) {
+    long remainMillis = 0;
+    private static final long LONGMAX = 2000L;
+    private CountDownTimer timer = new CountDownTimer(LONGMAX, 1000) {
 
         @Override
         public void onTick(long millisUntilFinished) {
             //mWebView.loadUrl("http://10.173.148.198:8080/ngboss/");
+            //mWebView.loadUrl("http://doc.wadecn.com/dmp/login.html");
 
-            mWebView.loadUrl("http://doc.wadecn.com/dmp/login.html");
+//            Log.d("wuyoujian",""+millisUntilFinished);
+//            Toast.makeText(MainActivity.this,""+millisUntilFinished,Toast.LENGTH_LONG).show();
+//            if (millisUntilFinished <= 1000 *2) {
+//
+//            }
+
+            remainMillis = millisUntilFinished;
         }
 
         @Override
         public void onFinish() {
+//            if (remainMillis <= 2*1000) {
+//                Toast.makeText(MainActivity.this,"链接超时",Toast.LENGTH_LONG).show();
+//                return;
+//            }
+
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
                     mImageView.setVisibility(View.GONE);
                     mWebView.setVisibility(View.VISIBLE);
                     //startAlphaAnimationJavaCode();
@@ -152,7 +166,7 @@ public class MainActivity extends AIBaseActivity {
 
 
 //        String token = "isLoginNoSms=1&loginToSuccessPage=1&mobile=" + "13577116615";String token = "isLoginNoSms=1&loginToSuccessPage=1&mobile=" + "13577116615";String token = "isLoginNoSms=1&loginToSuccessPage=1&mobile=" + "13577116615";
-        String token = "isLoginNoSms=1&loginToSuccessPage=1&mobile=" + "15925100424";
+        String token = "{\"userName\":\"wuyoujian\",\"timestamp\":\"2018-07-12 10:00:00\"}";
         try {
             token = AESEncrypt.encrypt(token, "www.asiainfo.com");
             String token00 = URLEncoder.encode(token, "utf-8");
@@ -161,24 +175,24 @@ public class MainActivity extends AIBaseActivity {
         } catch (Exception e) {
         }
 
-        //webView.loadDataWithBaseURL(null, "加载中...", "text/html", "utf-8",null);
-        //webView.loadUrl("http://plan.wadecn.com/#/");
+        //mWebView.loadDataWithBaseURL(null, "加载中...", "text/html", "utf-8",null);
+        //mWebView.loadUrl("http://plan.wadecn.com:9010/#/");
+        //mWebView.loadUrl("http://192.168.1.108/test.csv");
+        webView.loadUrl("http://192.168.43.41/test.html");
         mImageView = (ImageView)findViewById(R.id.iv_splash);
-        mWebView.loadDataWithBaseURL(null, "加载中...", "text/html", "utf-8",null);
+        //mWebView.loadDataWithBaseURL(null, "加载中...", "text/html", "utf-8",null);
         //webView.setVisibility(View.INVISIBLE);
-        timer.start();
-        //mWebView.loadUrl("file:///android_asset/welcome.html");
-
-
-        webView.setWebViewClient(new WebViewClient() {
+       // mWebView.loadUrl("file:///android_asset/welcome.html");
+        mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
+                timer.onFinish();
                 super.onPageFinished(view, url);
+
                 //view.setVisibility(View.VISIBLE);
+
             }
         });
-
-
 
         //webView.loadUrl("http://www.baidu.com");
         //webView.loadUrl("http://www.jd.com");
@@ -186,6 +200,20 @@ public class MainActivity extends AIBaseActivity {
         //http://www.wadecn.com/doc/Demo/test.html
         //http://10.174.61.149/html/demo.html
         //webView.loadUrl("http://www.wadecn.com/doc/Demo/test.html");
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+        timer.start();
 
         String string =  orderIdString("18600746313","ABOSS072","10000");
         Log.d("string",string);
